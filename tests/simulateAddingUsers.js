@@ -1,5 +1,6 @@
 const faker = require('faker');
 const axios = require('axios');
+const fs = require('fs');
 
 /*
 userId
@@ -33,26 +34,42 @@ const followGenerator = () => {
   return friends;
 };
 
-let user = {};
-let gender;
-let age;
-let followers = [];
-let followees = [];
+// get last userId count
+let lastUserId = fs.readFileSync('./tests/lastUserId.txt', 'utf8');
+console.log('First user ID is ', lastUserId);
 
-for (let i = 0; i < 1000; i++) {
-  user = {
+const maxUserId = Number(lastUserId) + 8000;
+
+const generateNewUserAndSendToServer = () => {
+  const user = {
+    userId: lastUserId,
     age: Math.floor(Math.random() * 70) + 18,
     gender: Math.random() > 0.5 ? 'M' : 'F',
     lastName: faker.fake('{{name.lastName}}'),
     firstName: faker.fake('{{name.firstName}}'),
     email: faker.fake('{{internet.email}}'),
-    username: faker.fake('{{internet.userName}}'),
+    userName: faker.fake('{{internet.userName}}'),
     profilePicture: faker.fake('{{image.imageUrl}}'),
     followers: followGenerator(),
     followees: followGenerator(),
   };
+
   axios.put('http://localhost:8080/user/add', user)
+    .then((data) => {
+      lastUserId++;
+      if (lastUserId < maxUserId) {
+        generateNewUserAndSendToServer();
+      } else {
+        fs.writeFile('./tests/lastUserId.txt', lastUserId, (err) => {
+          if (err) throw err;
+          console.log('lastUserId.txt file has been updated with ', lastUserId);
+        });
+      }
+    })
     .catch((error) => {
-      console.log(error);
+      console.log('There was an error PUTTING to server ');
+      throw error;
     });
-}
+};
+
+generateNewUserAndSendToServer();
