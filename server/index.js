@@ -12,10 +12,9 @@ app.listen(port, () => console.log('Server listening on port: ', port));
 app.use(bodyParser.json());
 
 app.put('/user/add', (req, res) => {
-  // console.log(req.body);
   addUserToDbAsync(req.body)
     .then((success) => {
-      // console.log(success);
+      console.log(success);
       res.send(success);
     })
     .catch(err => console.log('Problem adding to DB ', err));

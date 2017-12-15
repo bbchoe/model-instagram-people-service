@@ -40,7 +40,7 @@ console.log('First user ID is ', lastUserId);
 
 const maxUserId = Number(lastUserId) + 8000;
 
-const generateNewUserAndSendToServer = () => {
+const generateNewUser = () => {
   const user = {
     userId: lastUserId,
     age: Math.floor(Math.random() * 70) + 18,
@@ -53,23 +53,104 @@ const generateNewUserAndSendToServer = () => {
     followers: followGenerator(),
     followees: followGenerator(),
   };
-
-  axios.put('http://localhost:8080/user/add', user)
-    .then((data) => {
-      lastUserId++;
-      if (lastUserId < maxUserId) {
-        generateNewUserAndSendToServer();
-      } else {
-        fs.writeFile('./tests/lastUserId.txt', lastUserId, (err) => {
-          if (err) throw err;
-          console.log('lastUserId.txt file has been updated with ', lastUserId);
-        });
-      }
-    })
-    .catch((error) => {
-      console.log('There was an error PUTTING to server ');
-      throw error;
-    });
+  return user;
 };
 
-generateNewUserAndSendToServer();
+const batchSize = 50;
+const waitTime = 100;
+
+const bookmarkEnd = () => {
+  fs.writeFile('./tests/lastUserId.txt', lastUserId, (err) => {
+    if (err) throw err;
+    console.log('lastUserId.txt file has been updated with ', lastUserId);
+  });
+};
+
+const addBatchOfUsers = () => {
+  console.log('beginning our addBatch ', lastUserId);
+  for (let i = 0; i < batchSize && lastUserId < maxUserId; i++) {
+    lastUserId++;
+    // console.log(lastUserId);
+    axios.put('http://localhost:8080/user/add', generateNewUser())
+      .catch((error) => {
+        console.log('There was an error PUTTING to server ');
+        throw error;
+      });
+  }
+  console.log('batch was added ', lastUserId);
+};
+
+const addUserBatches = () => {
+  addBatchOfUsers();
+  if (lastUserId < maxUserId) {
+    setTimeout(addUserBatches, waitTime);
+  } else if (lastUserId === maxUserId) {
+    bookmarkEnd();
+  }
+};
+
+addUserBatches();
+
+// STRUCTURED AS A SYNCHRONOUS OPERATION
+// const generateNewUserAndSendToServer = () => {
+//   const user = {
+//     userId: lastUserId,
+//     age: Math.floor(Math.random() * 70) + 18,
+//     gender: Math.random() > 0.5 ? 'M' : 'F',
+//     lastName: faker.fake('{{name.lastName}}'),
+//     firstName: faker.fake('{{name.firstName}}'),
+//     email: faker.fake('{{internet.email}}'),
+//     userName: faker.fake('{{internet.userName}}'),
+//     profilePicture: faker.fake('{{image.imageUrl}}'),
+//     followers: followGenerator(),
+//     followees: followGenerator(),
+//   };
+//
+//   axios.put('http://localhost:8080/user/add', user)
+//     .then((data) => {
+//       lastUserId++;
+//       if (lastUserId < maxUserId) {
+//         generateNewUserAndSendToServer();
+//       } else {
+//         fs.writeFile('./tests/lastUserId.txt', lastUserId, (err) => {
+//           if (err) throw err;
+//           console.log('lastUserId.txt file has been updated with ', lastUserId);
+//         });
+//       }
+//     })
+//     .catch((error) => {
+//       console.log('There was an error PUTTING to server ');
+//       throw error;
+//     });
+// };
+//
+// generateNewUserAndSendToServer();
+
+// STRUCTURED AS A PORT FLOODING STRATEGY
+// const sendToServer = () => {
+//   const serverTestFlag = { test: true };
+//   axios.put('http://localhost:8080/user/add', serverTestFlag)
+//     .then(() => {
+//       axios.put('http://localhost:8080/user/add', generateNewUser())
+//         .then(() => {
+//           lastUserId++;
+//           if (lastUserId < maxUserId) {
+//             sendToServer();
+//           } else if (lastUserId === maxUserId) {
+//             fs.writeFile('./tests/lastUserId.txt', lastUserId, (err) => {
+//               if (err) throw err;
+//               console.log('lastUserId.txt file has been updated with ', lastUserId);
+//             });
+//           }
+//         })
+//         .catch((error) => {
+//           console.log('There was an error PUTTING to server ');
+//           throw error;
+//         });
+//     })
+//     .catch((err) => {
+//       setTimeout(sendToServer, waitTime);
+//     });
+// };
+//
+// sendToServer();
