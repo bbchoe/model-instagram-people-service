@@ -15,6 +15,8 @@ followers: [ userIds ]
 following: [ userIds ]
 */
 
+const startTime = Date.now();
+
 const followGenerator = () => {
   // generate a random list of integers ranging from 0 - 10,000,000
   // there will be a random number of these generated, ranging from 0 - 4,000
@@ -56,14 +58,15 @@ const generateNewUser = () => {
   return user;
 };
 
-const batchSize = 50;
-const waitTime = 100;
+const batchSize = 100;
+const waitTime = 185;
 
 const bookmarkEnd = () => {
   fs.writeFile('./tests/lastUserId.txt', lastUserId, (err) => {
     if (err) throw err;
     console.log('lastUserId.txt file has been updated with ', lastUserId);
   });
+  console.log(Date.now() - startTime, ' ms to complete operation');
 };
 
 const addBatchOfUsers = () => {
