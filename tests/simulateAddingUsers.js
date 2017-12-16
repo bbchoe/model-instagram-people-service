@@ -40,9 +40,10 @@ const followGenerator = () => {
 let lastUserId = fs.readFileSync('./tests/lastUserId.txt', 'utf8');
 console.log('First user ID is ', lastUserId);
 
-const maxUserId = Number(lastUserId) + 8000;
+const maxUserId = Number(lastUserId) + 1;
 
-const generateNewUser = () => {
+// STRUCTURED AS A SYNCHRONOUS OPERATION
+const generateNewUserAndSendToServer = () => {
   const user = {
     userId: lastUserId,
     age: Math.floor(Math.random() * 70) + 18,
@@ -55,47 +56,30 @@ const generateNewUser = () => {
     followers: followGenerator(),
     followees: followGenerator(),
   };
-  return user;
+
+  axios.put('http://localhost:8080/user/add', user)
+    .then((data) => {
+      lastUserId++;
+      if (lastUserId < maxUserId) {
+        generateNewUserAndSendToServer();
+      } else {
+        fs.writeFile('./tests/lastUserId.txt', lastUserId, (err) => {
+          if (err) throw err;
+          console.log('lastUserId.txt file has been updated with ', lastUserId);
+          console.log(Date.now() - startTime, ' ms to complete operation');
+        });
+      }
+    })
+    .catch((error) => {
+      console.log('There was an error PUTTING to server ');
+      throw error;
+    });
 };
 
-const batchSize = 100;
-const waitTime = 185;
-
-const bookmarkEnd = () => {
-  fs.writeFile('./tests/lastUserId.txt', lastUserId, (err) => {
-    if (err) throw err;
-    console.log('lastUserId.txt file has been updated with ', lastUserId);
-  });
-  console.log(Date.now() - startTime, ' ms to complete operation');
-};
-
-const addBatchOfUsers = () => {
-  console.log('beginning our addBatch ', lastUserId);
-  for (let i = 0; i < batchSize && lastUserId < maxUserId; i++) {
-    lastUserId++;
-    // console.log(lastUserId);
-    axios.put('http://localhost:8080/user/add', generateNewUser())
-      .catch((error) => {
-        console.log('There was an error PUTTING to server ');
-        throw error;
-      });
-  }
-  console.log('batch was added ', lastUserId);
-};
-
-const addUserBatches = () => {
-  addBatchOfUsers();
-  if (lastUserId < maxUserId) {
-    setTimeout(addUserBatches, waitTime);
-  } else if (lastUserId === maxUserId) {
-    bookmarkEnd();
-  }
-};
-
-addUserBatches();
+generateNewUserAndSendToServer();
 
 // STRUCTURED AS A SYNCHRONOUS OPERATION
-// const generateNewUserAndSendToServer = () => {
+// const generateNewUser = () => {
 //   const user = {
 //     userId: lastUserId,
 //     age: Math.floor(Math.random() * 70) + 18,
@@ -108,26 +92,44 @@ addUserBatches();
 //     followers: followGenerator(),
 //     followees: followGenerator(),
 //   };
-//
-//   axios.put('http://localhost:8080/user/add', user)
-//     .then((data) => {
-//       lastUserId++;
-//       if (lastUserId < maxUserId) {
-//         generateNewUserAndSendToServer();
-//       } else {
-//         fs.writeFile('./tests/lastUserId.txt', lastUserId, (err) => {
-//           if (err) throw err;
-//           console.log('lastUserId.txt file has been updated with ', lastUserId);
-//         });
-//       }
-//     })
-//     .catch((error) => {
-//       console.log('There was an error PUTTING to server ');
-//       throw error;
-//     });
+//   return user;
 // };
 //
-// generateNewUserAndSendToServer();
+// const batchSize = 100;
+// const waitTime = 200;
+//
+// const bookmarkEnd = () => {
+//   fs.writeFile('./tests/lastUserId.txt', lastUserId, (err) => {
+//     if (err) throw err;
+//     console.log('lastUserId.txt file has been updated with ', lastUserId);
+//   });
+//   console.log(Date.now() - startTime, ' ms to complete operation');
+// };
+//
+// const addBatchOfUsers = () => {
+//   console.log('beginning our addBatch ', lastUserId);
+//   for (let i = 0; i < batchSize && lastUserId < maxUserId; i++) {
+//     lastUserId++;
+//     // console.log(lastUserId);
+//     axios.put('http://localhost:8080/user/add', generateNewUser())
+//       .catch((error) => {
+//         console.log('There was an error PUTTING to server ');
+//         throw error;
+//       });
+//   }
+//   console.log('batch was added ', lastUserId);
+// };
+//
+// const addUserBatches = () => {
+//   addBatchOfUsers();
+//   if (lastUserId < maxUserId) {
+//     setTimeout(addUserBatches, waitTime);
+//   } else if (lastUserId === maxUserId) {
+//     bookmarkEnd();
+//   }
+// };
+//
+// addUserBatches();
 
 // STRUCTURED AS A PORT FLOODING STRATEGY
 // const sendToServer = () => {

@@ -1,5 +1,9 @@
+const apm = require('elastic-apm-node').start({
+  appName: 'model-instagram-people-service',
+  secretToken: '',
+  serverUrl: '',
+});
 const express = require('express');
-const morgan = require('morgan');
 const bodyParser = require('body-parser');
 const { addUserToDbAsync } = require('../database/index');
 
@@ -8,7 +12,6 @@ const port = 8080;
 
 app.listen(port, () => console.log('Server listening on port: ', port));
 
-// app.use(morgan('dev'));
 app.use(bodyParser.json());
 
 app.put('/user/add', (req, res) => {
