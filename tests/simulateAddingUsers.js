@@ -2,6 +2,8 @@ const faker = require('faker');
 const axios = require('axios');
 const fs = require('fs');
 
+const { followGenerator } = require('../helpers/followGenerator');
+
 /*
 userId
 age
@@ -17,30 +19,13 @@ following: [ userIds ]
 
 const startTime = Date.now();
 
-const followGenerator = () => {
-  // generate a random list of integers ranging from 0 - 10,000,000
-  // there will be a random number of these generated, ranging from 0 - 4,000
-  // these will represent either followers or followees
-  const maxFollow = 10000000;
-  const maxNum = 400;
-  let num = Math.round(Math.random() * maxNum);
-  let friends = [];
-  let newFriend;
-
-  for (let i = 0; i < num; i++) {
-    newFriend = Math.round(Math.random() * maxFollow);
-    if (!friends.includes(newFriend)) {
-      friends.push(newFriend);
-    }
-  }
-  return friends;
-};
 
 // get last userId count
 let lastUserId = fs.readFileSync('./tests/lastUserId.txt', 'utf8');
 console.log('First user ID is ', lastUserId);
 
-const maxUserId = Number(lastUserId) + 1;
+const maxUserId = Number(lastUserId) + 10000;
+let newUsers = [];
 
 // STRUCTURED AS A SYNCHRONOUS OPERATION
 const generateNewUserAndSendToServer = () => {
@@ -57,26 +42,36 @@ const generateNewUserAndSendToServer = () => {
     followees: followGenerator(),
   };
 
-  axios.put('http://localhost:8080/user/add', user)
-    .then((data) => {
-      lastUserId++;
-      if (lastUserId < maxUserId) {
-        generateNewUserAndSendToServer();
-      } else {
-        fs.writeFile('./tests/lastUserId.txt', lastUserId, (err) => {
-          if (err) throw err;
-          console.log('lastUserId.txt file has been updated with ', lastUserId);
-          console.log(Date.now() - startTime, ' ms to complete operation');
-        });
-      }
-    })
-    .catch((error) => {
-      console.log('There was an error PUTTING to server ');
-      throw error;
-    });
+  // newUsers.push(user);
+  lastUserId++;
+  if (lastUserId < maxUserId) {
+    generateNewUserAndSendToServer();
+  } else {
+    console.log('finished with ', lastUserId);
+    console.log(Date.now() - startTime, ' ms to complete operation');
+  }
 };
 
 generateNewUserAndSendToServer();
+
+// INCLUDES PUT REQUEST
+// axios.put('http://localhost:8080/user/add', user)
+//   .then((data) => {
+//     lastUserId++;
+//     if (lastUserId < maxUserId) {
+//       generateNewUserAndSendToServer();
+//     } else {
+//       fs.writeFile('./tests/lastUserId.txt', lastUserId, (err) => {
+//         if (err) throw err;
+//         console.log('lastUserId.txt file has been updated with ', lastUserId);
+//         console.log(Date.now() - startTime, ' ms to complete operation');
+//       });
+//     }
+//   })
+//   .catch((error) => {
+//     console.log('There was an error PUTTING to server ');
+//     throw error;
+//   });
 
 // STRUCTURED AS A SYNCHRONOUS OPERATION
 // const generateNewUser = () => {

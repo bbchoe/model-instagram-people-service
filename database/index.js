@@ -34,4 +34,16 @@ const addUserToDbAsync = (user) => {
   });
 };
 
+const bulkAddUsersToDb = (users) => {
+  return new Promise((resolve, reject) => {
+    let newUsers = users.map((user) => {
+      return new User(user);
+    });
+    db.users.insertMany(newUsers)
+      .then(() => console.log('bulk insert was successful'))
+      .catch((err) => { throw err });
+  });
+};
+
 module.exports.addUserToDbAsync = addUserToDbAsync;
+module.exports.bulkAddUsersToDb = bulkAddUsersToDb;
