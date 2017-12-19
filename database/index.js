@@ -15,7 +15,7 @@ const userSchema = mongoose.Schema({
   lastName: String,
   firstName: String,
   email: String,
-  username: String,
+  userName: String,
   profilePicture: String,
   followers: Array,
   followees: Array,
@@ -34,4 +34,16 @@ const addUserToDbAsync = (user) => {
   });
 };
 
+const bulkAddUsersToDb = (users) => {
+  return new Promise((resolve, reject) => {
+    let newUsers = users.map((user) => {
+      return new User(user);
+    });
+    User.collection.insertMany(newUsers)
+      .then(() => resolve('bulk insert was successful'))
+      .catch(err => reject(err));
+  });
+};
+
 module.exports.addUserToDbAsync = addUserToDbAsync;
+module.exports.bulkAddUsersToDb = bulkAddUsersToDb;
