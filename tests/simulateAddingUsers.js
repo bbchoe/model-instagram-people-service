@@ -19,7 +19,6 @@ following: [ userIds ]
 
 const startTime = Date.now();
 
-
 // get last userId count
 let lastUserId = fs.readFileSync('./tests/lastUserId.txt', 'utf8');
 console.log('First user ID is ', lastUserId);

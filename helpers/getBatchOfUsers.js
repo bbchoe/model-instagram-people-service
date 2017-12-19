@@ -3,19 +3,12 @@ const fs = require('fs');
 
 const { followGenerator } = require('./followGenerator');
 
-const getBatchOfUsers = (popSize) => {
-  const startTime = Date.now();
-
-  // get last userId count
-  let lastUserId = fs.readFileSync('./tests/lastUserId.txt', 'utf8');
-  console.log('First user ID is ', lastUserId);
-  const maxUserId = Number(lastUserId) + popSize;
-
+const getBatchOfUsers = (popSize, userId) => {
   let newUsers = [];
 
-  const generateNewUserAndPush = () => {
+  const generateNewUserAndPush = (currentUserId) => {
     const user = {
-      userId: lastUserId,
+      userId: currentUserId,
       age: Math.floor(Math.random() * 70) + 18,
       gender: Math.random() > 0.5 ? 'M' : 'F',
       lastName: faker.fake('{{name.lastName}}'),
@@ -30,12 +23,9 @@ const getBatchOfUsers = (popSize) => {
     newUsers.push(user);
   };
 
-  while (lastUserId < maxUserId) {
-    generateNewUserAndPush();
-    lastUserId++;
+  for (let i = 0; i < popSize; i++) {
+    generateNewUserAndPush(Number(userId) + i);
   }
-  console.log('finished with ', lastUserId);
-  console.log(Date.now() - startTime, ' ms to complete operation');
 
   return newUsers;
 };

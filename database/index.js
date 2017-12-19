@@ -15,7 +15,7 @@ const userSchema = mongoose.Schema({
   lastName: String,
   firstName: String,
   email: String,
-  username: String,
+  userName: String,
   profilePicture: String,
   followers: Array,
   followees: Array,
@@ -39,9 +39,9 @@ const bulkAddUsersToDb = (users) => {
     let newUsers = users.map((user) => {
       return new User(user);
     });
-    db.users.insertMany(newUsers)
-      .then(() => console.log('bulk insert was successful'))
-      .catch((err) => { throw err });
+    User.collection.insertMany(newUsers)
+      .then(() => resolve('bulk insert was successful'))
+      .catch(err => reject(err));
   });
 };
 
