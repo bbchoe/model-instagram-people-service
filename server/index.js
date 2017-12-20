@@ -1,23 +1,34 @@
-const apm = require('elastic-apm-node').start({
-  appName: 'model-instagram-people-service',
-  secretToken: '',
-  serverUrl: '',
-});
+const nr = require('newrelic');
 const express = require('express');
 const bodyParser = require('body-parser');
-const { bulkAddUsersToDb, addUserToDbAsync } = require('../database/index');
+const { bulkAddUsersToDb,
+        addUserToDbAsync,
+        getFollowers
+      } = require('../database/index');
 const { getBatchOfUsers } = require('../helpers/getBatchOfUsers');
 const { getUserProfile } = require('../helpers/getUserProfile');
 const fs = require('fs');
 
-const app = express();
+const service = express();
 const port = 8080;
 
-app.listen(port, () => console.log('Server listening on port: ', port));
+service.get('/users/:user_id/followers', (req, res) => {
+  getFollowers(req.params.user_id)
+    .then((data) => {
+      let userData = {
+        userName: data[0].userName,
+        followers: data[0].followers,
+      };
+      res.send(userData);
+    })
+    .catch(err => console.log(err));
+});
 
-app.use(bodyParser.json());
+service.listen(port, () => console.log('Server listening on port: ', port));
 
-app.put('/user/add', (req, res) => {
+service.use(bodyParser.json());
+
+service.put('/user/add', (req, res) => {
   addUserToDbAsync(req.body)
     .then((success) => {
       console.log(success);
@@ -26,8 +37,8 @@ app.put('/user/add', (req, res) => {
     .catch(err => console.log('Problem adding to DB ', err));
 });
 
-app.put('/bulkuser/add', (req, res) => {
-  const volOfUsersToAdd = 1700000;
+service.put('/bulkuser/add', (req, res) => {
+  const volOfUsersToAdd = 1000000;
   const batchSize = 20000;
 
   const startTime = Date.now();
@@ -66,7 +77,7 @@ app.put('/bulkuser/add', (req, res) => {
   res.send('successful bulk add operation');
 });
 
-app.put('/streamuser/add', (req, res) => {
+service.put('/streamuser/add', (req, res) => {
   const volOfUsersToAdd = 10000;
 
   // get last userId count

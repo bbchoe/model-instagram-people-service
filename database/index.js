@@ -9,7 +9,7 @@ db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', () => console.log('We\'re connected'));
 
 const userSchema = mongoose.Schema({
-  userId: Number,
+  userId: { type: Number, index: true },
   age: Number,
   gender: String,
   lastName: String,
@@ -45,5 +45,14 @@ const bulkAddUsersToDb = (users) => {
   });
 };
 
+const getFollowers = (userId) => {
+  return new Promise((resolve, reject) => {
+    User.find({userId: userId})
+      .then(data => resolve(data))
+      .catch(err => reject(err));
+  });
+};
+
 module.exports.addUserToDbAsync = addUserToDbAsync;
 module.exports.bulkAddUsersToDb = bulkAddUsersToDb;
+module.exports.getFollowers = getFollowers;
