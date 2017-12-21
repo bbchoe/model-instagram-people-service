@@ -1,10 +1,11 @@
 const nr = require('newrelic');
 const express = require('express');
 const bodyParser = require('body-parser');
-const { bulkAddUsersToDb,
-        addUserToDbAsync,
-        getUserData
-      } = require('../database/index');
+const {
+  bulkAddUsersToDb,
+  addUserToDbAsync,
+  getUserData
+} = require('../database/index');
 const { getBatchOfUsers } = require('../helpers/getBatchOfUsers');
 const { getUserProfile } = require('../helpers/getUserProfile');
 const { getCommonElements } = require('../helpers/getCommonElements');
@@ -115,7 +116,7 @@ service.put('/bulkuser/add', (req, res) => {
 });
 
 service.put('/streamuser/add', (req, res) => {
-  const volOfUsersToAdd = 10000;
+  const volOfUsersToAdd = 10;
 
   // get last userId count
 
@@ -145,5 +146,5 @@ service.put('/streamuser/add', (req, res) => {
 
   insertUserToDb(lastUserId);
 
-  res.send('successful) stream write ');
+  res.send('successful stream write');
 });
