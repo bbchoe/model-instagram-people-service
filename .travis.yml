@@ -6,4 +6,6 @@ services:
 install:
   - npm install
 before_script:
-  - npm run start:server & npm test
+  - npm run start
+script:
+  - npm test
