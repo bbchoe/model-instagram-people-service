@@ -138,6 +138,7 @@ service.put('/streamuser/add', (req, res) => {
             if (err) throw err;
             console.log('lastUserId.txt file has been updated with ', lastUserId);
             console.log(Date.now() - startTime, ' ms to complete operation');
+            res.send('successful stream write');
           });
         }
       })
@@ -146,5 +147,4 @@ service.put('/streamuser/add', (req, res) => {
 
   insertUserToDb(lastUserId);
 
-  res.send('successful stream write');
 });
