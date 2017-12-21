@@ -3,5 +3,5 @@ node_js:
   - '6.11.3'
 install:
   - npm install
-before script:
+before_script:
   - npm run start:server
