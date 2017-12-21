@@ -118,8 +118,6 @@ service.put('/bulkuser/add', (req, res) => {
 service.put('/streamuser/add', (req, res) => {
   const volOfUsersToAdd = 10;
 
-  // get last userId count
-
   const startTime = Date.now();
 
   console.log('environment variables ', process.env.NODE_ENV);
@@ -150,5 +148,4 @@ service.put('/streamuser/add', (req, res) => {
   };
 
   insertUserToDb(lastUserId);
-
 });
