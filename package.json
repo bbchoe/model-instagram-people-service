@@ -7,7 +7,7 @@
     "test": "tests"
   },
   "scripts": {
-    "start:server": "export NODE_ENV=production && nodemon --max_old_space_size=4000 ./server/index.js",
+    "start:server": "export NODE_ENV=development && nodemon --max_old_space_size=4000 ./server/index.js",
     "start:server:test": "export NODE_ENV=test && nodemon --max_old_space_size=4000 ./server/index.js",
     "test": "mocha"
   },
