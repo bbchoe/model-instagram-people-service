@@ -8,6 +8,7 @@
   },
   "scripts": {
     "start:server": "nodemon --max_old_space_size=4000 ./server/index.js",
+    "start:server:test": "NODE_ENV=test && nodemon --max_old_space_size=4000 ./server/index.js",
     "test": "mocha"
   },
   "repository": {
