@@ -45,7 +45,7 @@ const bulkAddUsersToDb = (users) => {
   });
 };
 
-const getFollowers = (userId) => {
+const getUserData = (userId) => {
   return new Promise((resolve, reject) => {
     User.find({userId: userId})
       .then(data => resolve(data))
@@ -55,4 +55,4 @@ const getFollowers = (userId) => {
 
 module.exports.addUserToDbAsync = addUserToDbAsync;
 module.exports.bulkAddUsersToDb = bulkAddUsersToDb;
-module.exports.getFollowers = getFollowers;
+module.exports.getUserData = getUserData;

@@ -20,13 +20,16 @@
   },
   "homepage": "https://github.com/bbchoe/model-instagram-people-service#readme",
   "devDependencies": {
+    "chai": "^3.5.0",
+    "chai-http": "^2.0.1",
     "eslint": "^4.13.1",
     "eslint-config-airbnb": "^16.1.0",
     "eslint-plugin-import": "^2.8.0",
     "eslint-plugin-jsx-a11y": "^6.0.2",
     "eslint-plugin-react": "^7.5.1",
     "faker": "^4.1.0",
-    "fs": "0.0.1-security"
+    "fs": "0.0.1-security",
+    "mocha": "^2.4.5"
   },
   "dependencies": {
     "axios": "^0.17.1",

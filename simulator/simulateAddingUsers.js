@@ -20,7 +20,7 @@ following: [ userIds ]
 const startTime = Date.now();
 
 // get last userId count
-let lastUserId = fs.readFileSync('./tests/lastUserId.txt', 'utf8');
+let lastUserId = fs.readFileSync('./simulator/lastUserId.txt', 'utf8');
 console.log('First user ID is ', lastUserId);
 
 const maxUserId = Number(lastUserId) + 10000;
@@ -60,7 +60,7 @@ generateNewUserAndSendToServer();
 //     if (lastUserId < maxUserId) {
 //       generateNewUserAndSendToServer();
 //     } else {
-//       fs.writeFile('./tests/lastUserId.txt', lastUserId, (err) => {
+//       fs.writeFile('./simulator/lastUserId.txt', lastUserId, (err) => {
 //         if (err) throw err;
 //         console.log('lastUserId.txt file has been updated with ', lastUserId);
 //         console.log(Date.now() - startTime, ' ms to complete operation');
@@ -93,7 +93,7 @@ generateNewUserAndSendToServer();
 // const waitTime = 200;
 //
 // const bookmarkEnd = () => {
-//   fs.writeFile('./tests/lastUserId.txt', lastUserId, (err) => {
+//   fs.writeFile('./simulator/lastUserId.txt', lastUserId, (err) => {
 //     if (err) throw err;
 //     console.log('lastUserId.txt file has been updated with ', lastUserId);
 //   });
@@ -136,7 +136,7 @@ generateNewUserAndSendToServer();
 //           if (lastUserId < maxUserId) {
 //             sendToServer();
 //           } else if (lastUserId === maxUserId) {
-//             fs.writeFile('./tests/lastUserId.txt', lastUserId, (err) => {
+//             fs.writeFile('./simulator/lastUserId.txt', lastUserId, (err) => {
 //               if (err) throw err;
 //               console.log('lastUserId.txt file has been updated with ', lastUserId);
 //             });
