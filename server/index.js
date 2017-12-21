@@ -123,10 +123,9 @@ service.put('/streamuser/add', (req, res) => {
   const startTime = Date.now();
 
   console.log('environment variables ', process.env.NODE_ENV);
+  let lastUserId = Number(fs.readFileSync('./simulator/lastUserId.txt', 'utf8'));
   if (process.env.NODE_ENV === 'test') {
-    let lastUserId = 0;
-  } else {
-    let lastUserId = Number(fs.readFileSync('./simulator/lastUserId.txt', 'utf8'));
+    lastUserId = 0;
   }
   console.log('First user ID is ', lastUserId);
   const maxUserId = lastUserId + volOfUsersToAdd;
