@@ -10,6 +10,7 @@ db.once('open', () => console.log('We\'re connected'));
 
 const userSchema = mongoose.Schema({
   userId: { type: Number, index: true },
+  createdAt: { type: Date, default: Date.now },
   age: Number,
   gender: String,
   lastName: String,
@@ -36,11 +37,20 @@ const addUserToDbAsync = (user) => {
 
 const bulkAddUsersToDb = (users) => {
   return new Promise((resolve, reject) => {
+    const startTime = Date.now();
+    console.log('   starting map operation');
     let newUsers = users.map((user) => {
       return new User(user);
     });
+    const phase1Time = Date.now();
+    console.log('   finished map.', phase1Time - startTime);
+    console.log('   starting DB insert.');
     User.collection.insertMany(newUsers)
-      .then(() => resolve('bulk insert was successful'))
+      .then(() => {
+        const phase2Time = Date.now();
+        console.log('   finished DB insert ', phase2Time - phase1Time);
+        resolve('bulk insert was successful');
+      })
       .catch(err => reject(err));
   });
 };
