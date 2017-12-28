@@ -18,7 +18,7 @@ describe('Adding User Profiles to DB', () => {
 
 describe('Testing Get Followers', () => {
   it('should return followers for a given userId', (done) => {
-    // chai.request('http://localhost:8080')
+    chai.request('http://localhost:8080')
       .get('/users/5/followers')
       .end((err, res) => {
         res.should.have.status(200);
