@@ -4,17 +4,17 @@ const chaiHttp = require('chai-http');
 
 chai.use(chaiHttp);
 
-describe('Adding User Profiles to DB', () => {
-  it('should add randomly generated users to the database', (done) => {
-    chai.request('http://localhost:8080')
-      .put('/streamuser/add')
-      .end((err, res) => {
-        console.log(res.text);
-        res.text.should.equal('successful stream write');
-        done();
-      });
-  });
-});
+// describe('Adding User Profiles to DB', () => {
+//   it('should add randomly generated users to the database', (done) => {
+//     chai.request('http://localhost:8080')
+//       .put('/streamuser/add')
+//       .end((err, res) => {
+//         console.log(res.text);
+//         res.text.should.equal('successful stream write');
+//         done();
+//       });
+//   });
+// });
 
 describe('Testing Get Followers', () => {
   it('should return followers for a given userId', (done) => {

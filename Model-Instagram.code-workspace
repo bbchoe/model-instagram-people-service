@@ -13,5 +13,9 @@
 			"path": "/Users/brianchoe/Documents/Visibook-code"
 		}
 	],
-	"settings": {}
+	"settings": {
+		"workbench.colorCustomizations": {
+			"editorCursor.foreground": "#ff0000"
+		}
+	}
 }
