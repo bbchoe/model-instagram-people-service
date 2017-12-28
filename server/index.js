@@ -124,7 +124,7 @@ service.put('/bulkuser/add', (req, res) => {
 service.put('/streamuser/add', (req, res) => {
   let volOfUsersToAdd = 10000;
 
-  if (process.env.NODE_ENV === 'docker') {
+  if (process.env.NODE_ENV === 'docker' || process.env.NODE_ENV === 'test') {
     volOfUsersToAdd = 100;
   }
 
