@@ -1,7 +1,13 @@
 const mongoose = require('mongoose');
 const Promise = require('bluebird');
 
-mongoose.connect('mongodb://localhost/people-service');
+if (process.env.NODE_ENV === 'docker') {
+  console.log('using this host: mongodb://database/people-service');
+  mongoose.connect('mongodb://database/people-service');
+} else {
+  console.log('using this host: mongodb://localhost/people-service');
+  mongoose.connect('mongodb://localhost/people-service');
+}
 
 let db = mongoose.connection;
 

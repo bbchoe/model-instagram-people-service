@@ -14,11 +14,11 @@ const fs = require('fs');
 
 dotenv.config();
 const service = express();
-let port = 8080;
+const port = 8080;
 
-if (process.env.NODE_ENV === 'docker') {
-  port = 3000;
-}
+// if (process.env.NODE_ENV === 'docker') {
+//   port = 3000;
+// }
 
 service.listen(port, () => console.log('Server listening on port: ', port));
 
@@ -130,6 +130,7 @@ service.put('/streamuser/add', (req, res) => {
 
   const startTime = Date.now();
 
+  console.log('---- testing development on docker ----');
   console.log('environment variables ', process.env.NODE_ENV);
 
   let lastUserId = Number(fs.readFileSync('./simulator/lastUserId.txt', 'utf8'));
@@ -147,16 +148,22 @@ service.put('/streamuser/add', (req, res) => {
         if (lastUserId < maxUserId) {
           insertUserToDb(lastUserId);
         } else if (lastUserId === maxUserId) {
-          fs.writeFile('./simulator/lastUserId.txt', lastUserId, (err) => {
-            if (err) throw err;
-            console.log('lastUserId.txt file has been updated with ', lastUserId);
+          if (process.env.NODE_ENV === 'test' || process.env.NODE_ENV === 'docker') {
             console.log(Date.now() - startTime, ' ms to complete operation');
             res.send('successful stream write');
-          });
+          } else {
+            fs.writeFile('./simulator/lastUserId.txt', lastUserId, (err) => {
+              if (err) throw err;
+              console.log('lastUserId.txt file has been updated with ', lastUserId);
+              console.log(Date.now() - startTime, ' ms to complete operation');
+              res.send('successful stream write');
+            });
+          }
         }
       })
       .catch(err => console.log('Problem adding to DB ', err));
   };
 
   insertUserToDb(lastUserId);
+  // res.send('changed development');
 });
