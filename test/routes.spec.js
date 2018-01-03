@@ -9,7 +9,7 @@ describe('Adding User Profiles to DB', () => {
     chai.request('http://localhost:8080')
       .put('/streamuser/add')
       .end((err, res) => {
-        if (err) return done(err);
+        if (err) return done(err); // Not sure why, but this fixed my double callback problem on Travis
         console.log(res.text);
         res.text.should.equal('successful stream write');
         done();

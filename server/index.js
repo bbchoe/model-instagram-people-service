@@ -16,10 +16,6 @@ dotenv.config();
 const service = express();
 const port = 8080;
 
-// if (process.env.NODE_ENV === 'docker') {
-//   port = 3000;
-// }
-
 service.listen(port, () => console.log('Server listening on port: ', port));
 
 service.use(bodyParser.json());
